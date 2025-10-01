@@ -1,8 +1,10 @@
-import { Button, Text, TextInput, useTheme } from "react-native-paper";
-import { useFormik } from "formik";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { View } from "react-native";
+import { supabase } from "@/src/superbase/client";
+import { appLogger } from "@/src/util/logger";
 import { useRouter } from "expo-router";
+import { useFormik } from "formik";
+import { View } from "react-native";
+import { Button, Text, TextInput, useTheme } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function LoginScreen() {
   const theme = useTheme();
@@ -12,8 +14,14 @@ export default function LoginScreen() {
       email: "",
       password: "",
     },
-    onSubmit(d) {
-      console.log(d);
+    async onSubmit(d) {
+      appLogger.info("SignIn Attempt got called")
+      const data = await supabase.auth.signInWithPassword({
+        email: d.email,
+        password: d.password,
+      });
+      console.log(data)
+      appLogger.info("SignIn Successfully: User Authenticated")
     },
   });
   return (
@@ -74,18 +82,12 @@ export default function LoginScreen() {
           gap: 24,
         }}
       >
-        <Button
-          mode="contained"
-          icon="arrow-left"
-          labelStyle={theme.fonts.titleLarge}
-          onPress={formik.submitForm}
-        >
+        <Button mode="contained" icon="arrow-left" onPress={formik.submitForm}>
           Iniciar Session
         </Button>
         <Button
           icon="account-circle-outline"
           mode="contained-tonal"
-          labelStyle={theme.fonts.titleLarge}
           onPress={() => {
             formik.resetForm();
             router.push("/registration");

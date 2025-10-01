@@ -1,7 +1,7 @@
-import { PaperProvider, useTheme } from "react-native-paper";
 import { Slot } from "expo-router";
 import { FC, ReactNode } from "react";
 import { View } from "react-native";
+import { PaperProvider, useTheme } from "react-native-paper";
 
 const Background: FC<{ children: ReactNode[] | ReactNode }> = ({
   children,
