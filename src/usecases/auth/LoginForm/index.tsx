@@ -1,8 +1,9 @@
+import { NATIVE_PADDING, WEB_MAX_WIDTH, WEB_PADDING } from "@/src/constants";
 import { useAppSelector } from "@/src/redux/hooks";
 import useLoginForm from "@/src/usecases/auth/LoginForm/hooks";
 import { useRouter } from "expo-router";
 import { FC } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { Button, HelperText, Text, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -18,7 +19,9 @@ const LoginForm: FC = () => {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: 32,
+        padding: Platform.OS === "web" ? WEB_PADDING : NATIVE_PADDING,
+        maxWidth: Platform.OS === "web" ? WEB_MAX_WIDTH : undefined,
+        width: Platform.OS === "web" ? "100%" : undefined,
         gap: 32,
       }}
     >
@@ -30,9 +33,7 @@ const LoginForm: FC = () => {
       </Text>
       <View
         style={{
-          maxWidth: 460,
-          minWidth: 360,
-          width: "100%",
+          width: "100%", // Now fills the parent's constrained width
           gap: 24,
         }}
       >

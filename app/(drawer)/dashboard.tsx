@@ -1,10 +1,11 @@
-import { getSupabase } from "@/src/superbase/client";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
-import { StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
 import { Appbar, Button, FAB } from "react-native-paper";
+import { useSupabase } from "@/src/providers/SupabaseProvider";
 
 export default function Dashboard() {
   const navigation = useNavigation();
+  const supabase = useSupabase();
   return (
     <View style={styles.container}>
       <Appbar.Header>
@@ -13,13 +14,18 @@ export default function Dashboard() {
           onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
         />
         <Appbar.Content title="Dashboard" />
+        {Platform.OS === "web" && (
+          <Appbar.Action title="Agregar Cita" onPress={() => {}} />
+        )}
       </Appbar.Header>
       <View style={styles.content}>
-        <Button mode="contained" onPress={() => getSupabase().auth.signOut()}>
+        <Button mode="contained" onPress={() => supabase.auth.signOut()}>
           Logout
         </Button>
       </View>
-      <FAB icon="plus" style={styles.fab} onPress={() => {}} />
+      {Platform.OS !== "web" && (
+        <FAB icon="plus" style={styles.fab} onPress={() => {}} />
+      )}
     </View>
   );
 }

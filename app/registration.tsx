@@ -1,4 +1,4 @@
-import { supabase } from "@/src/superbase/client";
+import { useSupabase } from "@/src/providers/SupabaseProvider";
 import { appLogger } from "@/src/util/logger";
 import { useRouter } from "expo-router";
 import { useFormik } from "formik";
@@ -51,6 +51,7 @@ const RegistrationFormValidationSchema = Yup.object({
 });
 
 export default function RegistrationPage() {
+  const supabase = useSupabase()
   const formik = useFormik<RegistrationFormState>({
     validationSchema: RegistrationFormValidationSchema,
     initialValues: InitialState,

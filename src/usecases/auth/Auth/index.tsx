@@ -1,7 +1,7 @@
 import PageLoader from "@/src/components/PageLoader";
 import { AuthAction_SetState } from "@/src/redux/auth/actions";
 import { useAppDispatch, useAppSelector } from "@/src/redux/hooks";
-import { getSupabase } from "@/src/superbase/client";
+import { useSupabase } from "@/src/providers/SupabaseProvider";
 import { appLogger } from "@/src/util/logger";
 import { usePathname, useRouter } from "expo-router";
 import { FC, ReactNode, useEffect } from "react";
@@ -13,9 +13,9 @@ const Auth: FC<{ children: ReactNode }> = ({ children }) => {
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const authState = useAppSelector((state) => state.auth);
+  const supabase = useSupabase();
 
   useEffect(() => {
-    const supabase = getSupabase();
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         dispatch(
@@ -42,7 +42,7 @@ const Auth: FC<{ children: ReactNode }> = ({ children }) => {
     });
 
     return () => subscription.unsubscribe();
-  }, [dispatch]);
+  }, [dispatch, supabase]);
 
   useEffect(() => {
     authLogger.debug({ pathname, authState });
@@ -53,7 +53,7 @@ const Auth: FC<{ children: ReactNode }> = ({ children }) => {
     }
 
     const isSigned = authState.status === "signed";
-    const isAuthScreen = pathname === "/";
+    const isAuthScreen = pathname === "/" || pathname === "/registration";
 
     if (!isSigned && !isAuthScreen) {
       authLogger.info("User not signed in, redirecting to login");
