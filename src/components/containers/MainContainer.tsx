@@ -1,21 +1,22 @@
 import { FC, ReactNode } from "react";
-import { View } from "react-native";
 import { useTheme } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const MainContainer: FC<{ children: ReactNode[] | ReactNode }> = ({
   children,
 }) => {
   const theme = useTheme();
   return (
-    <View
+    <SafeAreaView
+      edges={["right", "bottom", "left"]}
       style={{
         flex: 1,
         backgroundColor: theme.colors.background,
       }}
     >
       {children}
-    </View>
+    </SafeAreaView>
   );
 };
 
-export default MainContainer
+export default MainContainer;
