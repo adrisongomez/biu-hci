@@ -1,13 +1,15 @@
-import useLoginForm from "@/src/usecases/LoginForm/hooks";
+import { useAppSelector } from "@/src/redux/hooks";
+import useLoginForm from "@/src/usecases/auth/LoginForm/hooks";
 import { useRouter } from "expo-router";
 import { FC } from "react";
 import { View } from "react-native";
-import { Button, Text, TextInput } from "react-native-paper";
+import { Button, HelperText, Text, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const LoginForm: FC = () => {
   const router = useRouter();
-  const { formik } = useLoginForm();
+  const { formik, error } = useLoginForm();
+  const auth = useAppSelector((state) => state.auth);
   return (
     <SafeAreaView
       style={{
@@ -35,6 +37,7 @@ const LoginForm: FC = () => {
         }}
       >
         <TextInput
+          disabled={auth.status == "loading"}
           mode="outlined"
           placeholder="Email"
           onChangeText={formik.handleChange("email")}
@@ -43,6 +46,7 @@ const LoginForm: FC = () => {
           autoCapitalize="none"
         />
         <TextInput
+          disabled={auth.status == "loading"}
           mode="outlined"
           placeholder="Contraseña"
           onChangeText={formik.handleChange("password")}
@@ -51,6 +55,9 @@ const LoginForm: FC = () => {
           inputMode="text"
           secureTextEntry
         />
+        <HelperText type="error" visible={!!error}>
+          {error}
+        </HelperText>
       </View>
       <View
         style={{
@@ -60,10 +67,17 @@ const LoginForm: FC = () => {
           gap: 24,
         }}
       >
-        <Button mode="contained" icon="arrow-left" onPress={formik.submitForm}>
+        <Button
+          loading={auth.status == "loading"}
+          disabled={auth.status == "loading"}
+          mode="contained"
+          icon="arrow-left"
+          onPress={formik.submitForm}
+        >
           Iniciar Session
         </Button>
         <Button
+          disabled={auth.status == "loading"}
           icon="account-circle-outline"
           mode="contained-tonal"
           onPress={() => {
